@@ -1,19 +1,21 @@
-package logrus_logstash
+package sockrus
 
 import (
 	"net"
 
 	"github.com/Sirupsen/logrus"
-	logrus_logstash_fmt "github.com/Sirupsen/logrus/formatters/logstash"
+	"github.com/Sirupsen/logrus/formatters/logstash"
 )
 
-// Hook represents a connection to a Logstash instance
+// Hook represents a connection to a socket
 type Hook struct {
 	conn net.Conn
 }
 
-// NewHook creates a new hook to a Logstash instance, which listens on
-// `protocol`://`address`.
+// NewHook establish a socket connection
+// Protocols allowed are: "udp", "tcp" or "unix"
+// For TCP and UDP networks, addresses have the form host:port
+// For Unix networks, the address must be a file system path.
 func NewHook(protocol, address string) (*Hook, error) {
 	conn, err := net.Dial(protocol, address)
 	if err != nil {
@@ -22,8 +24,9 @@ func NewHook(protocol, address string) (*Hook, error) {
 	return &Hook{conn: conn}, nil
 }
 
+// Fire send log to the defined socket
 func (h *Hook) Fire(entry *logrus.Entry) error {
-	formatter := logrus_logstash_fmt.LogstashFormatter{}
+	formatter := logstash.LogstashFormatter{}
 	dataBytes, err := formatter.Format(entry)
 	if err != nil {
 		return err
@@ -34,6 +37,7 @@ func (h *Hook) Fire(entry *logrus.Entry) error {
 	return nil
 }
 
+// Levels return an array of handled logging levels
 func (h *Hook) Levels() []logrus.Level {
 	return []logrus.Level{
 		logrus.PanicLevel,

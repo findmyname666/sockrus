@@ -1,5 +1,7 @@
-# Logstash hook for logrus <img src="http://i.imgur.com/hTeVwmJ.png" width="40" height="40" alt=":walrus:" class="emoji" title=":walrus:" />
-Use this hook to send the logs to [Logstash](https://www.elastic.co/products/logstash) over both UDP and TCP.
+# Socket hook for [logrus](https://github.com/Sirupsen/logrus) <img src="http://i.imgur.com/hTeVwmJ.png" width="40" height="40" alt=":walrus:" class="emoji" title=":walrus:" />
+Use this hook to send the logs over UDP, TCP or Unix socket.
+
+Output format is JSON, formatted for Logstash/ElasticSearch.
 
 ## Usage
 
@@ -8,12 +10,12 @@ package main
 
 import (
         "github.com/Sirupsen/logrus"
-        "github.com/bshuster-repo/logrus-logstash-hook"
+        "github.com/mirdhyn/sockrus"
 )
 
 func main() {
         log := logrus.New()
-        hook, err := logrus_logstash.NewHook("tcp", "172.17.0.2:9999")
+        hook, err := sockrus.NewHook("tcp", "localhost:9999")
         if err != nil {
                 log.Fatal(err)
         }
@@ -28,14 +30,12 @@ func main() {
 
 This is how it will look like:
 
-```ruby
+```json
 {
-    "@timestamp" => "2016-02-29T16:57:23.000Z",
-      "@version" => 1,
-         "level" => "info",
-       "message" => "Hello World!",
-        "method" => "main",
-          "host" => "172.17.0.1",
-          "port" => 45199
+  "@timestamp": "2016-04-15T12:49:36Z",
+  "@version": 1,
+  "level": "info",
+  "message": "Hello World!",
+  "method": "main"
 }
 ```
