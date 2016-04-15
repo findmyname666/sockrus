@@ -12,9 +12,9 @@ type Hook struct {
 	conn net.Conn
 }
 
-// NewHook establish a socket connection
-// Protocols allowed are: "udp", "tcp" or "unix"
-// For TCP and UDP networks, addresses have the form host:port
+// NewHook establish a socket connection.
+// Protocols allowed are: "udp", "tcp" or "unix".
+// For TCP and UDP, address must have the form `host:port`.
 // For Unix networks, the address must be a file system path.
 func NewHook(protocol, address string) (*Hook, error) {
 	conn, err := net.Dial(protocol, address)
@@ -39,12 +39,5 @@ func (h *Hook) Fire(entry *logrus.Entry) error {
 
 // Levels return an array of handled logging levels
 func (h *Hook) Levels() []logrus.Level {
-	return []logrus.Level{
-		logrus.PanicLevel,
-		logrus.FatalLevel,
-		logrus.ErrorLevel,
-		logrus.WarnLevel,
-		logrus.InfoLevel,
-		logrus.DebugLevel,
-	}
+	return logrus.AllLevels
 }
