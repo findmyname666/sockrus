@@ -20,7 +20,7 @@ func main() {
                 log.Fatal(err)
         }
         log.Hooks.Add(hook)
-        ctx := ctx := log.WithFields(logrus.Fields{
+        ctx := log.WithFields(logrus.Fields{
           "method": "main",
         })
         ...
