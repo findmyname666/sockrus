@@ -13,8 +13,11 @@ type Hook struct {
 }
 
 // NewHook establish a socket connection.
-// Protocols allowed are: "udp", "tcp" or "unix".
+// Protocols allowed are: "udp", "tcp", "unix" (corresponds to SOCK_STREAM),
+// "unixdomain" (corresponds to SOCK_DGRAM) or "unixpacket" (corresponds to SOCK_SEQPACKET).
+//
 // For TCP and UDP, address must have the form `host:port`.
+//
 // For Unix networks, the address must be a file system path.
 func NewHook(protocol, address string) (*Hook, error) {
 	conn, err := net.Dial(protocol, address)
