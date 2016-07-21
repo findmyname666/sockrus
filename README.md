@@ -13,7 +13,7 @@ package main
 
 import (
         "github.com/Sirupsen/logrus"
-        "github.com/mirdhyn/sockrus"
+        "github.com/ShowMax/sockrus"
 )
 
 func main() {
