@@ -2,15 +2,18 @@ package sockrus
 
 import (
 	"net"
+	"time"
 
 	"github.com/Sirupsen/logrus"
+	logrus_logstash "github.com/bshuster-repo/logrus-logstash-hook"
 )
 
 // Hook represents a connection to a socket
 type Hook struct {
-	conn     net.Conn
-	protocol string
-	address  string
+	formatter logrus_logstash.LogstashFormatter
+	conn      net.Conn
+	protocol  string
+	address   string
 }
 
 // NewHook establish a socket connection.
@@ -21,7 +24,15 @@ type Hook struct {
 //
 // For Unix networks, the address must be a file system path.
 func NewHook(protocol, address string) (*Hook, error) {
-	return &Hook{conn: nil, protocol: protocol, address: address}, nil
+	logstashFormatter := logrus_logstash.LogstashFormatter{
+		TimestampFormat: time.RFC3339Nano,
+	}
+	return &Hook{
+		conn:      nil,
+		protocol:  protocol,
+		address:   address,
+		formatter: logstashFormatter,
+	}, nil
 }
 
 // Fire send log to the defined socket
@@ -33,8 +44,7 @@ func (h *Hook) Fire(entry *logrus.Entry) error {
 			return err
 		}
 	}
-	formatter := logrus.JSONFormatter{}
-	dataBytes, err := formatter.Format(entry)
+	dataBytes, err := h.formatter.Format(entry)
 	if err != nil {
 		return err
 	}
