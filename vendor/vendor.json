@@ -1,0 +1,39 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "+fR/AtnnQXyyT36gzQgkpNb1cA4=",
+			"path": "github.com/Sirupsen/logrus",
+			"revision": "3ec0642a7fb6488f65b06f9040adc67e3990296a",
+			"revisionTime": "2016-08-29T20:23:21Z",
+			"tree": true
+		},
+		{
+			"checksumSHA1": "2Rxd3F7UXRaoc5n7tVq+aluyaZQ=",
+			"path": "github.com/bshuster-repo/logrus-logstash-hook",
+			"revision": "c5a17a5eb72da4c560f5e9bfb165180d9e681741",
+			"revisionTime": "2016-09-11T19:31:26Z",
+			"tree": true
+		},
+		{
+			"checksumSHA1": "8fD/im5Kwvy3JgmxulDTambmE8w=",
+			"path": "golang.org/x/sys/unix",
+			"revision": "30de6d19a3bd89a5f38ae4028e23aaa5582648af",
+			"revisionTime": "2016-09-07T05:59:14Z"
+		},
+		{
+			"checksumSHA1": "ndXMpu79jg3NR4jRLLTkMxDkqlA=",
+			"path": "gopkg.in/airbrake/gobrake.v2",
+			"revision": "5d77bd50d083834501349f8be70197b26963674d",
+			"revisionTime": "2016-08-24T10:32:48Z"
+		},
+		{
+			"checksumSHA1": "YV5g4hWLzjjsc8bi/iMIw7/gAnU=",
+			"path": "gopkg.in/gemnasium/logrus-airbrake-hook.v2",
+			"revision": "31e6fd4bd5a98d8ee7673d24bc54ec73c31810dd",
+			"revisionTime": "2015-10-06T01:16:14Z"
+		}
+	],
+	"rootPath": "github.com/ShowMax/sockrus"
+}
