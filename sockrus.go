@@ -1,6 +1,7 @@
 package sockrus
 
 import (
+	"fmt"
 	"net"
 	"time"
 
@@ -14,6 +15,7 @@ type Hook struct {
 	conn      net.Conn
 	protocol  string
 	address   string
+	mute      bool
 }
 
 // NewHook establish a socket connection.
@@ -32,6 +34,7 @@ func NewHook(protocol, address string) (*Hook, error) {
 		protocol:  protocol,
 		address:   address,
 		formatter: logstashFormatter,
+		mute:      false,
 	}, nil
 }
 
@@ -40,8 +43,12 @@ func (h *Hook) Fire(entry *logrus.Entry) error {
 	var err error
 	if h.conn == nil {
 		err = h.dialSock()
-		if err != nil {
-			return err
+		if err != nil && h.mute == false {
+			h.mute = true
+			retErr := fmt.Errorf("Failed to dial. All further errors will be muted: %v", err)
+			return retErr
+		} else if err != nil && h.mute == true {
+			return nil
 		}
 	}
 	dataBytes, err := h.formatter.Format(entry)
@@ -50,7 +57,13 @@ func (h *Hook) Fire(entry *logrus.Entry) error {
 	}
 	if _, err = h.conn.Write(dataBytes); err != nil {
 		_ = h.closeSock() // #nosec
-		return err
+		if h.mute == false {
+			h.mute = true
+			retErr := fmt.Errorf("Failed to write data. All further errors will be muted: %v", err)
+			return retErr
+		} else {
+			return nil
+		}
 	}
 	return nil
 }
@@ -78,5 +91,6 @@ func (h *Hook) dialSock() error {
 		return err
 	}
 	h.conn = conn
+	h.mute = false
 	return nil
 }
