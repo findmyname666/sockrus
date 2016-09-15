@@ -8,7 +8,9 @@ import (
 
 // Hook represents a connection to a socket
 type Hook struct {
-	conn net.Conn
+	conn     net.Conn
+	protocol string
+	address  string
 }
 
 // NewHook establish a socket connection.
@@ -19,21 +21,25 @@ type Hook struct {
 //
 // For Unix networks, the address must be a file system path.
 func NewHook(protocol, address string) (*Hook, error) {
-	conn, err := net.Dial(protocol, address)
-	if err != nil {
-		return nil, err
-	}
-	return &Hook{conn: conn}, nil
+	return &Hook{conn: nil, protocol: protocol, address: address}, nil
 }
 
 // Fire send log to the defined socket
 func (h *Hook) Fire(entry *logrus.Entry) error {
+	var err error
+	if h.conn == nil {
+		err = h.dialSock()
+		if err != nil {
+			return err
+		}
+	}
 	formatter := logrus.JSONFormatter{}
 	dataBytes, err := formatter.Format(entry)
 	if err != nil {
 		return err
 	}
 	if _, err = h.conn.Write(dataBytes); err != nil {
+		_ = h.closeSock() // #nosec
 		return err
 	}
 	return nil
@@ -42,4 +48,25 @@ func (h *Hook) Fire(entry *logrus.Entry) error {
 // Levels return an array of handled logging levels
 func (h *Hook) Levels() []logrus.Level {
 	return logrus.AllLevels
+}
+
+// closeSock tries to close connection to Unix socket
+func (h *Hook) closeSock() error {
+	if h.conn == nil {
+		return nil
+	}
+	err := h.conn.Close()
+	h.conn = nil
+	return err
+}
+
+// dialSock tries to connect to Unix socket
+func (h *Hook) dialSock() error {
+	conn, err := net.Dial(h.protocol, h.address)
+	if err != nil {
+		h.conn = nil
+		return err
+	}
+	h.conn = conn
+	return nil
 }
