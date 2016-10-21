@@ -1,96 +1,56 @@
 package sockrus
 
 import (
-	"fmt"
-	"net"
-	"time"
-
+	fqdn "github.com/ShowMax/go-fqdn"
 	"github.com/Sirupsen/logrus"
-	logrus_logstash "github.com/bshuster-repo/logrus-logstash-hook"
 )
 
-// Hook represents a connection to a socket
-type Hook struct {
-	formatter logrus_logstash.LogstashFormatter
-	conn      net.Conn
-	protocol  string
-	address   string
-	mute      bool
+// Config serves as means to configure logger and hook.
+type Config struct {
+	Hostname       string
+	LogLevel       logrus.Level
+	Service        string
+	SocketAddr     string
+	SocketProtocol string
 }
 
-// NewHook establish a socket connection.
-// Protocols allowed are: "udp", "tcp", "unix" (corresponds to SOCK_STREAM),
-// "unixdomain" (corresponds to SOCK_DGRAM) or "unixpacket" (corresponds to SOCK_SEQPACKET).
-//
-// For TCP and UDP, address must have the form `host:port`.
-//
-// For Unix networks, the address must be a file system path.
-func NewHook(protocol, address string) (*Hook, error) {
-	logstashFormatter := logrus_logstash.LogstashFormatter{
-		TimestampFormat: time.RFC3339Nano,
+// NewSockrus is a wrapper for initialization of logrus with sockrus hook. It
+// returns new instance of logrus.Logger and logrus.Entry. All errors are fatal.
+func NewSockrus(config Config) (*logrus.Logger, *logrus.Entry) {
+	if config.Service == "" {
+		config.Service = "unknown"
 	}
-	return &Hook{
-		conn:      nil,
-		protocol:  protocol,
-		address:   address,
-		formatter: logstashFormatter,
-		mute:      false,
-	}, nil
-}
 
-// Fire send log to the defined socket
-func (h *Hook) Fire(entry *logrus.Entry) error {
-	var err error
-	if h.conn == nil {
-		err = h.dialSock()
-		if err != nil && h.mute == false {
-			h.mute = true
-			retErr := fmt.Errorf("Failed to dial. All further errors will be muted: %v", err)
-			return retErr
-		} else if err != nil && h.mute == true {
-			return nil
+	logInstance := logrus.New()
+	logInstance.Level = config.LogLevel
+
+	// Get hostname.
+	if config.Hostname == "" {
+		config.Hostname = fqdn.Get()
+		if config.Hostname == "unknown" {
+			logInstance.WithFields(logrus.Fields{
+				"hostname": config.Hostname,
+				"msg_type": "log",
+				"service":  config.Service,
+			}).Fatal("Failed to get FQDN of machine I'm running at.")
 		}
 	}
-	dataBytes, err := h.formatter.Format(entry)
+
+	hook, err := NewHook(config.SocketProtocol, config.SocketAddr)
 	if err != nil {
-		return err
+		logInstance.WithFields(logrus.Fields{
+			"hostname": config.Hostname,
+			"msg_type": "log",
+			"service":  config.Service,
+			"error":    err.Error(),
+		}).Fatal("Failed to add Unix Socket Hook.")
 	}
-	if _, err = h.conn.Write(dataBytes); err != nil {
-		_ = h.closeSock() // #nosec
-		if h.mute == false {
-			h.mute = true
-			retErr := fmt.Errorf("Failed to write data. All further errors will be muted: %v", err)
-			return retErr
-		} else {
-			return nil
-		}
-	}
-	return nil
-}
+	logInstance.Hooks.Add(hook)
 
-// Levels return an array of handled logging levels
-func (h *Hook) Levels() []logrus.Level {
-	return logrus.AllLevels
-}
-
-// closeSock tries to close connection to Unix socket
-func (h *Hook) closeSock() error {
-	if h.conn == nil {
-		return nil
-	}
-	err := h.conn.Close()
-	h.conn = nil
-	return err
-}
-
-// dialSock tries to connect to Unix socket
-func (h *Hook) dialSock() error {
-	conn, err := net.Dial(h.protocol, h.address)
-	if err != nil {
-		h.conn = nil
-		return err
-	}
-	h.conn = conn
-	h.mute = false
-	return nil
+	log := logInstance.WithFields(logrus.Fields{
+		"hostname": config.Hostname,
+		"msg_type": "log",
+		"service":  config.Service,
+	})
+	return logInstance, log
 }
