@@ -2,7 +2,7 @@ package sockrus
 
 import (
 	fqdn "github.com/ShowMax/go-fqdn"
-	"github.com/Sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
 
 // Config serves as means to configure logger and hook.

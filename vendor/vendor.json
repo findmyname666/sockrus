@@ -9,18 +9,26 @@
 			"revisionTime": "2016-09-09T08:34:04Z"
 		},
 		{
-			"checksumSHA1": "+fR/AtnnQXyyT36gzQgkpNb1cA4=",
-			"path": "github.com/Sirupsen/logrus",
-			"revision": "3ec0642a7fb6488f65b06f9040adc67e3990296a",
-			"revisionTime": "2016-08-29T20:23:21Z",
-			"tree": true
+			"checksumSHA1": "VR/iAwO1lwECKgXPa0D1Ov8SJHY=",
+			"path": "github.com/bshuster-repo/logrus-logstash-hook",
+			"revision": "d2c0ecc1836d91814e15e23bb5dc309c3ef51f4a",
+			"revisionTime": "2017-05-17T17:13:03Z",
+			"version": "0.4",
+			"versionExact": "0.4"
 		},
 		{
-			"checksumSHA1": "2Rxd3F7UXRaoc5n7tVq+aluyaZQ=",
-			"path": "github.com/bshuster-repo/logrus-logstash-hook",
-			"revision": "c5a17a5eb72da4c560f5e9bfb165180d9e681741",
-			"revisionTime": "2016-09-11T19:31:26Z",
-			"tree": true
+			"checksumSHA1": "IVurU/0OPiDHP+JrmQ1JyAx7jng=",
+			"path": "github.com/sirupsen/logrus",
+			"revision": "a3f95b5c423586578a4e099b11a46c2479628cac",
+			"revisionTime": "2017-07-13T11:42:50Z",
+			"version": "1.0.2",
+			"versionExact": "1.0.2"
+		},
+		{
+			"checksumSHA1": "nqWNlnMmVpt628zzvyo6Yv2CX5Q=",
+			"path": "golang.org/x/crypto/ssh/terminal",
+			"revision": "faadfbdc035307d901e69eea569f5dda451a3ee3",
+			"revisionTime": "2017-09-12T19:17:24Z"
 		},
 		{
 			"checksumSHA1": "8fD/im5Kwvy3JgmxulDTambmE8w=",
@@ -29,16 +37,22 @@
 			"revisionTime": "2016-09-07T05:59:14Z"
 		},
 		{
+			"checksumSHA1": "pBPFzDGt3AVSRffB7ffiUnruFUk=",
+			"path": "golang.org/x/sys/windows",
+			"revision": "062cd7e4e68206d8bab9b18396626e855c992658",
+			"revisionTime": "2017-09-12T16:19:26Z"
+		},
+		{
 			"checksumSHA1": "ndXMpu79jg3NR4jRLLTkMxDkqlA=",
 			"path": "gopkg.in/airbrake/gobrake.v2",
 			"revision": "5d77bd50d083834501349f8be70197b26963674d",
 			"revisionTime": "2016-08-24T10:32:48Z"
 		},
 		{
-			"checksumSHA1": "YV5g4hWLzjjsc8bi/iMIw7/gAnU=",
+			"checksumSHA1": "XqaBdJ9W3Qt3/B+okhHzxfagHH8=",
 			"path": "gopkg.in/gemnasium/logrus-airbrake-hook.v2",
-			"revision": "31e6fd4bd5a98d8ee7673d24bc54ec73c31810dd",
-			"revisionTime": "2015-10-06T01:16:14Z"
+			"revision": "e928b033a891c0175fb643d5aa0779e86325eb12",
+			"revisionTime": "2017-06-01T21:22:28Z"
 		}
 	],
 	"rootPath": "github.com/ShowMax/sockrus"

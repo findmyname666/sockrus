@@ -4,8 +4,8 @@ import (
 	"net"
 	"time"
 
-	"github.com/Sirupsen/logrus"
 	logrus_logstash "github.com/bshuster-repo/logrus-logstash-hook"
+	"github.com/sirupsen/logrus"
 )
 
 // Hook represents a connection to a socket
