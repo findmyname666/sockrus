@@ -1,4 +1,4 @@
-module github.com/Showmax/sockrus
+module github.com/findmyname666/sockrus
 
 go 1.17
 
