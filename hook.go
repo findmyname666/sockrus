@@ -2,7 +2,7 @@ package sockrus
 
 import (
 	"net"
-	"time"
+	//"time"
 
 	logrus_logstash "github.com/bshuster-repo/logrus-logstash-hook"
 	"github.com/sirupsen/logrus"
@@ -23,13 +23,23 @@ type Hook struct {
 //
 // For Unix networks, the address must be a file system path.
 func NewHook(protocol, address string) (*Hook, error) {
-	logstashFormatter := logrus_logstash.LogstashFormatter{
-		TimestampFormat: time.RFC3339Nano,
-	}
+	//logstashFormatter := logrus_logstash.LogstashFormatter{
+	//	TimestampFormat: time.RFC3339Nano,
+	//}
 	return &Hook{
 		protocol:  protocol,
 		address:   address,
-		formatter: logstashFormatter,
+		formatter: logrus_logstash.LogstashFormatter{
+			Formatter: &logrus.JSONFormatter{
+				FieldMap: logrus.FieldMap{
+					logrus.FieldKeyTime: "@timestamp",
+					logrus.FieldKeyMsg:  "message",
+					//logrus.defaultTimestampFormat: time.RFC3339Nano,
+				},
+			},
+			Fields:    logrus.Fields{},
+
+		},
 	}, nil
 }
 
